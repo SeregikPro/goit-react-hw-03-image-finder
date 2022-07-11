@@ -1,4 +1,7 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ImSearch } from 'react-icons/im';
+import { toast } from 'react-toastify';
 import {
   Header,
   Form,
@@ -7,21 +10,48 @@ import {
   Input,
 } from './Searchbar.styled';
 
-export const Searchbar = ({ onSubmit }) => {
-  return (
-    <Header>
-      <Form>
-        <SearchButton type="submit" onSubmit={onSubmit}>
-          <ButtonLabel>Search</ButtonLabel>
-        </SearchButton>
+class Searchbar extends Component {
+  state = {
+    searchParams: '',
+  };
 
-        <Input
-          type="text"
-          autocomplete="off"
-          autofocus
-          placeholder="Search images and photos"
-        />
-      </Form>
-    </Header>
-  );
-};
+  handleSearchChange = event => {
+    this.setState({ searchParams: event.currentTarget.value.toLowerCase() });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+
+    if (this.state.searchParams.trim() === '') {
+      return toast.error('Input search query');
+    }
+
+    this.props.onSubmit(this.state.searchParams);
+    this.setState({ searchParams: '' });
+  };
+
+  render() {
+    return (
+      <Header>
+        <Form onSubmit={this.handleSubmit}>
+          <SearchButton type="submit">
+            <ImSearch size="24" />
+            <ButtonLabel>Search</ButtonLabel>
+          </SearchButton>
+
+          <Input
+            type="text"
+            name="searchParams"
+            value={this.state.searchParams}
+            onChange={this.handleSearchChange}
+            autocomplete="off"
+            autofocus
+            placeholder="Search images and photos"
+          />
+        </Form>
+      </Header>
+    );
+  }
+}
+
+export default Searchbar;
