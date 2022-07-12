@@ -35,7 +35,7 @@ class Searchbar extends Component {
       <Header>
         <Form onSubmit={this.handleSubmit}>
           <SearchButton type="submit">
-            <ImSearch size="24" />
+            <ImSearch size="20" />
             <ButtonLabel>Search</ButtonLabel>
           </SearchButton>
 
