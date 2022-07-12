@@ -12,6 +12,7 @@ export default class App extends Component {
     page: 1,
     searchParams: '',
     isLoading: false,
+    showModal: false,
   };
 
   componentDidUpdate(_, prevState) {
@@ -51,6 +52,12 @@ export default class App extends Component {
     }
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
   render() {
     const { items } = this.state;
 
@@ -64,7 +71,7 @@ export default class App extends Component {
         }}
       >
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        <ImageGallery images={items} onClick={this.handleOpenModal} />
+        <ImageGallery images={items} onClick={this.toggleModal} />
         <ToastContainer autoClose={3000} />
       </div>
     );
