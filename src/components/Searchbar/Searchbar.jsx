@@ -2,15 +2,13 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ImSearch } from 'react-icons/im';
 import { toast } from 'react-toastify';
-import {
-  Header,
-  Form,
-  SearchButton,
-  ButtonLabel,
-  Input,
-} from './Searchbar.styled';
+import { Header, Form, SearchButton, Input } from './Searchbar.styled';
 
 class Searchbar extends Component {
+  static propsTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
     searchParams: '',
   };
@@ -36,7 +34,6 @@ class Searchbar extends Component {
         <Form onSubmit={this.handleSubmit}>
           <SearchButton type="submit">
             <ImSearch size="20" />
-            <ButtonLabel>Search</ButtonLabel>
           </SearchButton>
 
           <Input

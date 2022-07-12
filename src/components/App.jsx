@@ -5,6 +5,8 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import Searchbar from './Searchbar';
 import { fetchImages } from 'services/image-api';
 import { imageMapper } from 'utils/mapper';
+import Modal from './Modal';
+import Button from './Button';
 
 export default class App extends Component {
   state = {
@@ -13,6 +15,7 @@ export default class App extends Component {
     searchParams: '',
     isLoading: false,
     showModal: false,
+    largeImage: null,
   };
 
   componentDidUpdate(_, prevState) {
@@ -52,14 +55,19 @@ export default class App extends Component {
     }
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
+  toggleModal = image => {
+    this.setState(({ showModal, largeImage }) => ({
       showModal: !showModal,
+      largeImage: image,
     }));
   };
 
+  loadMore = () => {
+    this.setState(({ page }) => ({ page: page + 1 }));
+  };
+
   render() {
-    const { items } = this.state;
+    const { items, largeImage, showModal } = this.state;
 
     return (
       <div
@@ -70,8 +78,14 @@ export default class App extends Component {
           paddingBottom: '24px',
         }}
       >
+        {showModal && (
+          <Modal onClose={this.toggleModal} largeImageURL={largeImage} />
+        )}
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery images={items} onClick={this.toggleModal} />
+        {items.length > 0 && (
+          <Button children="Load more" handleClick={this.loadMore} />
+        )}
         <ToastContainer autoClose={3000} />
       </div>
     );
