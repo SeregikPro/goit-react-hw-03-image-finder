@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
-import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import { toast } from 'react-toastify';
 
 import { fetchImages } from 'services/image-api';
 import { imageMapper } from 'utils/mapper';
@@ -11,6 +10,7 @@ import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Button from './Button';
 import Loader from './Loader';
+import { Box } from './Box';
 
 export default class App extends Component {
   state = {
@@ -20,43 +20,44 @@ export default class App extends Component {
     isLoading: false,
     showModal: false,
     largeImage: null,
+    error: null,
   };
 
-  componentDidUpdate(_, prevState) {
-    const { searchParams, page, items } = this.state;
+  componentDidUpdate(prevProps, prevState) {
+    const { searchParams, page } = this.state;
+    const prevSearch = prevState.searchParams;
 
-    if (prevState.searchParams !== searchParams || prevState.page !== page) {
+    if (prevSearch !== searchParams || prevState.page !== page) {
       this.loadImages(searchParams, page);
     }
-
-    if (prevState.items !== items && page !== 1) {
-      window.scrollBy({
-        top: document.body.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
   }
-
-  handleSearchSubmit = searchParams => {
-    this.setState({ searchParams });
-  };
 
   loadImages = async (searchParams, page) => {
     this.setState({ isLoading: true });
 
-    try {
-      const hits = await fetchImages(searchParams, page);
+    fetchImages(searchParams, page)
+      .then(hits => {
+        if (hits.length) {
+          return this.setState({
+            items: [...this.state.items, ...imageMapper(hits)],
+          });
+        }
 
-      if (!hits.length) {
-        throw new Error();
-      }
+        return Promise.reject(
+          new Error(
+            toast.error(
+              `Sorry, there are no images with query "${searchParams}". Please try again.`
+            )
+          )
+        );
+      })
 
-      this.setState({
-        items: [...this.state.items, ...imageMapper(hits)],
-      });
-    } catch (error) {
-      this.setState({});
-    }
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
+  };
+
+  handleSearchSubmit = searchParams => {
+    this.setState({ searchParams });
   };
 
   toggleModal = image => {
@@ -74,25 +75,31 @@ export default class App extends Component {
     const { items, largeImage, showModal, isLoading } = this.state;
 
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gridGap: '16px',
-          paddingBottom: '24px',
-        }}
+      <Box
+        display="grid"
+        gridTemplateColumns="1fr"
+        gridGap="16px"
+        pb="24px"
+        as="main"
       >
         {showModal && (
           <Modal onClose={this.toggleModal} largeImageURL={largeImage} />
         )}
+
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        <ImageGallery images={items} onClick={this.toggleModal} />
-        {isLoading && <Loader />}
-        {items.length > 0 && (
-          <Button children="Load more" handleClick={this.loadMore} />
-        )}
-        <ToastContainer autoClose={3000} />
-      </div>
+
+        <Box>
+          <ImageGallery images={items} onClick={this.toggleModal} />
+
+          {isLoading && <Loader />}
+
+          {items.length > 0 && (
+            <Button children="Load more" handleClick={this.loadMore} />
+          )}
+
+          <ToastContainer autoClose={3000} />
+        </Box>
+      </Box>
     );
   }
 }
