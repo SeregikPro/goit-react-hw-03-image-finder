@@ -57,7 +57,7 @@ export default class App extends Component {
   };
 
   handleSearchSubmit = searchParams => {
-    this.setState({ searchParams });
+    this.setState({ searchParams, page: 1, items: [] });
   };
 
   toggleModal = image => {
