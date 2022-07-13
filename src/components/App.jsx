@@ -10,6 +10,7 @@ import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Button from './Button';
 import Loader from './Loader';
+import { Box } from './Box';
 
 export default class App extends Component {
   state = {
@@ -74,13 +75,12 @@ export default class App extends Component {
     const { items, largeImage, showModal, isLoading } = this.state;
 
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gridGap: '16px',
-          paddingBottom: '24px',
-        }}
+      <Box
+        display="grid"
+        gridTemplateColumns="1fr"
+        gridGap="16px"
+        pb="24px"
+        as="main"
       >
         {showModal && (
           <Modal onClose={this.toggleModal} largeImageURL={largeImage} />
@@ -97,7 +97,7 @@ export default class App extends Component {
         )}
 
         <ToastContainer autoClose={3000} />
-      </div>
+      </Box>
     );
   }
 }
