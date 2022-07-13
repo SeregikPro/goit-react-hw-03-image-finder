@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import Searchbar from './Searchbar';
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+
 import { fetchImages } from 'services/image-api';
 import { imageMapper } from 'utils/mapper';
+
+import Searchbar from './Searchbar';
+import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Button from './Button';
+import Loader from './Loader';
 
 export default class App extends Component {
   state = {
@@ -67,7 +71,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { items, largeImage, showModal } = this.state;
+    const { items, largeImage, showModal, isLoading } = this.state;
 
     return (
       <div
@@ -83,6 +87,7 @@ export default class App extends Component {
         )}
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery images={items} onClick={this.toggleModal} />
+        {isLoading && <Loader />}
         {items.length > 0 && (
           <Button children="Load more" handleClick={this.loadMore} />
         )}
