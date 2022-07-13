@@ -10,7 +10,6 @@ import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Button from './Button';
 import Loader from './Loader';
-import { Box } from './Box';
 
 export default class App extends Component {
   state = {
@@ -75,12 +74,13 @@ export default class App extends Component {
     const { items, largeImage, showModal, isLoading } = this.state;
 
     return (
-      <Box
-        display="grid"
-        gridTemplateColumns="1fr"
-        gridGap="16px"
-        pb="24px"
-        as="main"
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gridGap: '16px',
+          paddingBottom: '24px',
+        }}
       >
         {showModal && (
           <Modal onClose={this.toggleModal} largeImageURL={largeImage} />
@@ -88,18 +88,16 @@ export default class App extends Component {
 
         <Searchbar onSubmit={this.handleSearchSubmit} />
 
-        <Box>
-          <ImageGallery images={items} onClick={this.toggleModal} />
+        <ImageGallery images={items} onClick={this.toggleModal} />
 
-          {isLoading && <Loader />}
+        {isLoading && <Loader />}
 
-          {items.length > 0 && (
-            <Button children="Load more" handleClick={this.loadMore} />
-          )}
+        {items.length > 0 && (
+          <Button children="Load more" handleClick={this.loadMore} />
+        )}
 
-          <ToastContainer autoClose={3000} />
-        </Box>
-      </Box>
+        <ToastContainer autoClose={3000} />
+      </div>
     );
   }
 }
