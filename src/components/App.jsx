@@ -88,7 +88,9 @@ export default class App extends Component {
 
         <Searchbar onSubmit={this.handleSearchSubmit} />
 
-        <ImageGallery images={items} onClick={this.toggleModal} />
+        {items.length > 0 && (
+          <ImageGallery images={items} onClick={this.toggleModal} />
+        )}
 
         {isLoading && <Loader />}
 
