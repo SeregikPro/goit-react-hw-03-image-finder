@@ -10,7 +10,8 @@ export const ImageGallery = ({ images, onClick }) => {
           <ImageGalleryItem
             key={id}
             webformatURL={webformatURL}
-            onClick={() => onClick(largeImageURL)}
+            largeImageURL={largeImageURL}
+            openLargeImage={onClick}
           />
         );
       })}
